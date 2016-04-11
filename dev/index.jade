@@ -25,9 +25,11 @@ html.no-js(lang='')
         |  browser. Please
         a(href='http://browsehappy.com/') upgrade your browser
         |  to improve your experience.
+
+    include images/icons.svg
     div.class
       p Hello world! This is HTML5 Boilerplate.
-    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
-    script.
-      window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\\/script>')
+    script(src='https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js')
+      script.
+        window.jQuery || document.write('<script src="js/vendor/jquery-{{JQUERY_VERSION}}.min.js"><\\/script>')
     script(src='js/main.js')

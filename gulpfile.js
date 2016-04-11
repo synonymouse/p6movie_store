@@ -11,6 +11,7 @@ var plumber = require('gulp-plumber');
 var gutil = require('gulp-util');
 var nano = require('gulp-cssnano');
 var rename = require('gulp-rename');
+var svgstore = require('gulp-svgstore');
 var bourbon = require('node-bourbon').includePaths;
 var dirSync = require('gulp-directory-sync');
 var browserSync = require('browser-sync');
@@ -91,7 +92,22 @@ gulp.task('sass', function() {
 gulp.task('images:sync', function() {
   return gulp.src('')
     .pipe(dirSync(f.dev + '/images', f.build + '/images'))
-    .on('error', gutil.log);;
+    .on('error', gutil.log);
+});
+
+// SVG
+gulp.task('icons', function () {
+  return gulp.src(f.dev + '/images')
+      .pipe(svgstore({ fileName: 'icons.svg', inlineSvg: true}))
+      // .pipe(cheerio({
+      //   run: function ($, file) {
+      //     $('svg').addClass('hide');
+      //     $('[fill]').removeAttr('fill');
+      //   },
+      //   parserOptions: { xmlMode: true }
+      // }))
+      .pipe(gulp.dest(f.build + '/images'))
+      .pipe(reload({stream:true}));
 });
 
 // Javascript sync
@@ -121,6 +137,7 @@ gulp.task('watch', function() {
   gulp.watch(f.scss, ['sass']).on('change', onChange);
   gulp.watch(f.dev + '/images', ['images:sync']).on('change', onChange);
   gulp.watch(f.dev + '/js', ['js:sync']).on('change', onChange);
+  gulp.watch(f.dev + '/images', ['icons']).on('change', onChange);
 });
 
 // Default Task
