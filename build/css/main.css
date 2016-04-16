@@ -134,3 +134,6 @@ textarea {
   height: 60%;
   color: #0ff;
   background: #000; }
+
+.nav-wrap {
+  display: block; }

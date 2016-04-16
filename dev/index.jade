@@ -26,7 +26,15 @@ html.no-js(lang='')
         a(href='http://browsehappy.com/') upgrade your browser
         |  to improve your experience.
 
-    include images/icons.svg
+    include ../build/images/images.svg
+    include _mixins.jade
+    nav.nav-wrap
+      ul.nav
+        +icon('camera','blue')
+        li.nav__item
+          a.nav__link(href="#") One
+        li.nav__item
+          a.nav__link(href="#") Two
     div.class
       p Hello world! This is HTML5 Boilerplate.
     script(src='https://code.jquery.com/jquery-{{JQUERY_VERSION}}.min.js')

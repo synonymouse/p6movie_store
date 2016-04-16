@@ -11,11 +11,13 @@ var plumber = require('gulp-plumber');
 var gutil = require('gulp-util');
 var nano = require('gulp-cssnano');
 var rename = require('gulp-rename');
-var svgstore = require('gulp-svgstore');
+var svgstore = require('gulp-svgstore'),
+    svgmin = require('gulp-svgmin'),
+    cheerio = require('gulp-cheerio');
 var bourbon = require('node-bourbon').includePaths;
 var dirSync = require('gulp-directory-sync');
-var browserSync = require('browser-sync');
-var injector = require('bs-html-injector');
+var browserSync = require('browser-sync'),
+    injector = require('bs-html-injector');
 var reload = browserSync.reload;
 
 var f = {
@@ -24,7 +26,7 @@ var f = {
   css: 'build/css',
   scss: 'dev/scss/**/*.{scss,sass}',
   html: 'build/*.html',
-  jade: 'dev/*.jade'
+  jade: 'dev/!(_)*.jade'
 };
 
 // error and change functions
@@ -97,16 +99,18 @@ gulp.task('images:sync', function() {
 
 // SVG
 gulp.task('icons', function () {
-  return gulp.src(f.dev + '/images')
+  return gulp.src('dev/images/*.svg')
+      .pipe(svgmin())
       .pipe(svgstore({ fileName: 'icons.svg', inlineSvg: true}))
-      // .pipe(cheerio({
-      //   run: function ($, file) {
-      //     $('svg').addClass('hide');
-      //     $('[fill]').removeAttr('fill');
-      //   },
-      //   parserOptions: { xmlMode: true }
-      // }))
-      .pipe(gulp.dest(f.build + '/images'))
+      .pipe(cheerio({
+        run: function ($, file) {
+          $('svg').addClass('hide');
+          $('[fill]').removeAttr('fill');
+          $('[style]').removeAttr('style');
+        },
+        parserOptions: { xmlMode: true }
+      }))
+      .pipe(gulp.dest('build/images'))
       .pipe(reload({stream:true}));
 });
 
@@ -137,7 +141,7 @@ gulp.task('watch', function() {
   gulp.watch(f.scss, ['sass']).on('change', onChange);
   gulp.watch(f.dev + '/images', ['images:sync']).on('change', onChange);
   gulp.watch(f.dev + '/js', ['js:sync']).on('change', onChange);
-  gulp.watch(f.dev + '/images', ['icons']).on('change', onChange);
+  gulp.watch('dev/images/*.svg', ['icons']).on('change', onChange);
 });
 
 // Default Task
